@@ -1,0 +1,9 @@
+﻿  main.cpp
+main.cpp(14): warning C4018: '<': signed/unsigned mismatch
+main.cpp(55): warning C4018: '<': signed/unsigned mismatch
+main.cpp(170): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Generating code
+  All 44 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  varikon.vcxproj -> C:\Users\Sasha\Documents\Visual Studio 2015\Projects\varikon\Release\varikon.exe
+  varikon.vcxproj -> C:\Users\Sasha\Documents\Visual Studio 2015\Projects\varikon\Release\varikon.pdb (Full PDB)

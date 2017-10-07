@@ -1,0 +1,6 @@
+﻿  main.cpp
+c:\users\sasha\documents\visual studio 2015\projects\varikon\varikon\main.cpp(14): warning C4018: '<': signed/unsigned mismatch
+c:\users\sasha\documents\visual studio 2015\projects\varikon\varikon\main.cpp(56): warning C4018: '<': signed/unsigned mismatch
+c:\users\sasha\documents\visual studio 2015\projects\varikon\varikon\main.cpp(169): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  varikon.vcxproj -> C:\Users\Sasha\Documents\Visual Studio 2015\Projects\varikon\Debug\varikon.exe
+  varikon.vcxproj -> C:\Users\Sasha\Documents\Visual Studio 2015\Projects\varikon\Debug\varikon.pdb (Full PDB)
