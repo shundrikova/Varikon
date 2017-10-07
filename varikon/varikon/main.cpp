@@ -110,26 +110,38 @@ public:
 	//	return (sum % 2 == 0);
 	//};
 
-	//выполнение хода //TO DO
+	//выполнение хода
 	State makeMove(Move m, size_t index) {
 		State s(*this);
 
 		switch (m){
 		case Up:
-			std::swap(s.st[s.null_index], s.st[s.null_index + 4]);
-			s.null_index += 4;
+			if (null_index != -1) {
+				std::swap(s.st[s.null_index], s.st[s.null_index + 5]);
+				s.null_index += 5;
+			}
+			else {
+				std::swap(s.st[notch.second], s.notch.first);
+				s.null_index = -1;
+			}
 			break;
 		case Down:
-			std::swap(s.st[s.null_index], s.st[s.null_index - 4]);
-			s.null_index -= 4;
+			std::swap(s.st[s.null_index], s.st[s.null_index - 5]);
+			s.null_index -= 5;
 			break;
 		case Left:
-			std::swap(s.st[s.null_index], s.st[s.null_index + 1]);
-			++s.null_index;
+			if (index != -1)
+				std::rotate(s.st.begin() + index * 5, s.st.begin() + index * 5 + 1, s.st.begin() + index * 5 + 5);
+			else {
+				s.notch.second = (s.notch.second + 4) % 5;
+			}
 			break;
 		case Right:
-			std::swap(s.st[s.null_index], s.st[s.null_index - 1]);
-			--s.null_index;
+			if (index != -1)
+				std::rotate(s.st.begin() + index * 5, s.st.begin() + index * 5 + 4, s.st.begin() + index * 5 + 5);
+			else {
+				s.notch.second = (s.notch.second + 1) % 5;
+			}
 			break;
 		default:
 			break;
@@ -232,6 +244,9 @@ int main() {
 	State state;
 	state.genRandomState();
 	state.printState();
+	State new_state = state.makeMove(Right, -1);
+	std::cout << std::endl;
+	new_state.printState();
 
 	/*srand(time(0));
 	time_t start = clock();

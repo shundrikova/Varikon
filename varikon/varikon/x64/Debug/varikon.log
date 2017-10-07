@@ -1,0 +1,4 @@
+﻿  main.cpp
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(185): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  varikon.vcxproj -> C:\Users\Sasha\Documents\GitHub\Varikon\varikon\x64\Debug\varikon.exe
+  varikon.vcxproj -> C:\Users\Sasha\Documents\GitHub\Varikon\varikon\x64\Debug\varikon.pdb (Full PDB)
