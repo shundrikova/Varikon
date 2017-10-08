@@ -25,14 +25,22 @@ class State {
 	std::array<char, size> st;
 	std::pair<char, size_t> notch;
 	int null_index;
+
 public:
 	int g = 0;
+	State *parent = 0;
 	//конструкторы
 	State() {}
 
 	State(std::string &s, std::pair<char, size_t> n):notch(n) {
 		st = Parser(s);
-		null_index = -1;
+		if (n.first == 'E')
+			null_index = -1;
+		else {
+			for (int i = 0; i < size; ++i)
+				if (st[i] == 'E')
+					null_index = i;
+		}
 	}
 
 	//конструктор копии
@@ -41,8 +49,19 @@ public:
 		notch = s.notch;
 		for (int i = 0; i < size; ++i)
 			st[i] = s.st[i];
+		g = s.g;
+		parent = s.parent;
 	}
 
+	/*State(const State &s, const State *p) {
+		null_index = s.null_index;
+		notch = s.notch;
+		for (int i = 0; i < size; ++i)
+			st[i] = s.st[i];
+		g = s.g;
+		*parent = *p;
+	}
+*/
 	//оператор проверки на равенство
 	friend const bool operator == (const State &s1, const State &s2)
 	{
@@ -52,9 +71,9 @@ public:
 			for (int i = 0; i < s1.st.size(); i++)
 				if (s1.st[i] != s2.st[i])
 					return false;
-			if (s1.notch.second != s2.notch.second)
-				return false;
 		}
+		if (s1.notch.second != s2.notch.second)
+			return false;
 		return true;
 	}
 
@@ -201,6 +220,8 @@ public:
 	};
 };
 
+
+
 //вспомогательная функция для IDA* //TO DO
 int Search(std::deque<State>&path, int g, int bound, bool &found) {
 	State s = path.back();
@@ -253,18 +274,91 @@ void Solve(State state) {
 	std::cout << "Steps: " << path.size() - 1 << std::endl;
 }
 
+struct q_type
+{
+	std::set<State>::iterator it;
+	int h;
+	friend bool operator<(const q_type &p1, const q_type &p2) {
+		return p1.h > p2.h;
+	}
+		
+};
+
+void print(State&s) {
+	s.printState();
+	std::cout << std::endl;
+	if (s.parent != 0)
+		print(*s.parent);
+}
+
+void AStar(State &state){
+	std::multiset<State> seen;
+	std::priority_queue<q_type> open;
+	q_type qel;
+
+	state.g = 0;
+	auto emp_res = seen.insert(state);
+	qel.h = state.g + state.heuristic();
+	qel.it = emp_res;
+	open.emplace(qel);
+	while (!open.empty())
+	{
+		State cur = *open.top().it;
+		open.pop();
+		if (cur.isFinal())
+		{
+			cur.printState();
+			std::cout << "Steps: " << cur.g << std::endl;
+			return;
+		}
+
+		State child;
+		for (int i = 0; i < 4; ++i) {
+			if (cur.canMove((Move)i)) {
+				int index = -1;
+				if ((Move)i == Up || (Move)i == Down) index = 4;
+				for (index; index < 5; ++index) {
+					child = cur.makeMove((Move)i, index);
+					child.g = cur.g + 1;
+					child.parent = new State(cur);
+					if (std::find(seen.begin(), seen.end(), child) == seen.end()) {
+						emp_res = seen.insert(child);
+					}
+						if (child.isFinal()) {
+							print(child);
+							std::cout << "Steps: " << child.g << std::endl;
+							return;
+						}
+							
+						qel.h =
+							child.g +
+							child.heuristic();
+						qel.it = emp_res;
+						open.emplace(qel);					
+					
+				}
+			}
+		}
+	}
+}
+
+// https://en.wikipedia.org/wiki/Fringe_search 
+
 int main() {
-	//std::string s = "WGBGBGWWWGRRYRYYYBRBYBGWR";
-	std::string s = "GBYWRBYWRGRGBYWWRGBYGBYWR";
+	std::string s = "WGBGBGWWWGRRYRYYYBRBYBGWR";
+	//std::string s = "RGBYWRGBYWRGBYWWRGBYGBYWR";
+	//std::string s = "RGBYWRGBEWBYWRGWRGBYGBYWR";
 	std::pair<char, size_t> n = std::pair<char, size_t>({ 'E', 4 });
 	State state = State(s, n);
 	//State state;
 	//state.genRandomState();
-	state.printState();
+	//state.printState();
+	std::cout << std::endl;
 
 	srand(time(0));
 	time_t start = clock();
-	Solve(state);
+	//Solve(state);
+	AStar(state);
 	std::cout.precision(10);
 	std::cout << "Time: " << double(clock() - start) / CLOCKS_PER_SEC << " seconds\n";	
 
