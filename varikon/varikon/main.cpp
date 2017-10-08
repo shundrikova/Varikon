@@ -79,39 +79,36 @@ public:
 
 	//эвристика //TO DO
 	int heuristic() const {
-		int md = 0;
-		int value = 0;
-		for (int i = 0; i < size; ++i) {
-			if (st[i] >= '0' && st[i] <= '9')
-				value = st[i] - '0';
-			else
-				value = st[i] + 10 - 'A';
-
-			if (value != 0) {
-				int drow = i / 4 - (value - 1) / 4; //curr - goalr 
-				int dcol = i % 4 - (value - 1) % 4; //curc - goalc
-				md += abs(drow) + abs(dcol);
+		int h = 0;
+		int j = 0;
+		while (j < 5) {
+			int r = 0, g = 0, b = 0, y = 0, w = 0;
+			for (int i = j; i < j + 21; i += 5) {
+				switch (st[i])
+				{
+				case 'R': ++r;
+					break;
+				case 'G': ++g;
+					break;
+				case 'B': ++b;
+					break;
+				case 'Y': ++y;
+					break;
+				case 'W': ++w;
+					break;
+				default:
+					break;
+				}
 			}
+			int max = std::max({ r, g, b, y, w });
+			h += 5 - max;
+			j++;
 		}
-		return md;
+		return h;
 	};
 
-	//можно ли получить решение
-	//bool isValid() {
-	//	int sum = 1;
-	//	for (int i = 0; i < size - 1; ++i) {
-	//		for (int j = i + 1; j < size; ++j) {
-	//			if (st[i] > st[j] && st[j] != '0')
-	//				++sum;
-	//		}
-
-	//	}
-	//	sum += null_index / 4;
-	//	return (sum % 2 == 0);
-	//};
-
 	//выполнение хода
-	State makeMove(Move m, size_t index) {
+	State makeMove(Move m, int index) {
 		State s(*this);
 
 		switch (m){
@@ -122,7 +119,7 @@ public:
 			}
 			else {
 				std::swap(s.st[notch.second], s.notch.first);
-				s.null_index = -1;
+				s.null_index = notch.second;
 			}
 			break;
 		case Down:
@@ -162,17 +159,15 @@ public:
 				return false;
 			return false;
 			break;
-		case Left: return true;
-			break;
+		case Left:
 		case Right: return true;
-			break;
-		default:
 			break;
 		}
 	};
 
 	//создание случайного состо€ни€
 	void genRandomState() {
+		srand(time(0));
 		st = { 'R', 'R', 'R', 'R', 'R', 
 			'G', 'G', 'G', 'G', 'G', 
 			'B', 'B', 'B', 'B', 'B', 
@@ -185,68 +180,79 @@ public:
 		null_index = -1;
 	};
 
-	//проверка на целевое ???
-	/*bool isFinal() {
-		std::array<char, size> temp = { '1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','0' };
-		return std::equal(st.begin(), st.end(), temp.begin());
-	};*/
+	//проверка на целевое
+	bool isFinal() {
+		return (heuristic() == 0);
+	};
 };
 
 //вспомогательна€ функци€ дл€ IDA* //TO DO
-//int Search(std::deque<State>&path, int g, int bound, bool &found) {
-//	State s = path.back();
-//	int f = g + s.heuristic();
-//	if (f > bound) return f;
-//	if (s.isFinal()) {
-//		found = true;
-//		return bound;
-//	}
-//	int min = INT_MAX;
-//	for (int i = 0; i < 4; ++i) {
-//		if (s.canMove((Move)i)) {
-//			State new_state = s.makeMove((Move)i);
-//			if (std::find(path.begin(), path.end(), new_state) == path.end()) {
-//				path.push_back(new_state);
-//				bool fnd = false;
-//				int t = Search(path, g + 1, bound, fnd);
-//				if (fnd) {
-//					found = true;
-//					return bound;
-//				}
-//				if (t < min) min = t;
-//				path.pop_back();
-//			}
-//		}
-//	}
-//	return min;
-//}
+int Search(std::deque<State>&path, int g, int bound, bool &found) {
+	State s = path.back();
+	double f = g + s.heuristic();
+	if (f > bound) return f;
+	if (s.isFinal()) {
+		found = true;
+		return bound;
+	}
+	int min = INT_MAX;
+	for (int i = 0; i < 4; ++i) {
+		if (s.canMove((Move)i)) {
+			int index = -1;
+			if ((Move)i == Up || (Move)i == Down) index = 4;
+			for (index; index < 5; ++index) {
+				State new_state = s.makeMove((Move)i, index);
+				if (std::find(path.begin(), path.end(), new_state) == path.end()) {
+					path.push_back(new_state);
+					bool fnd = false;
+					int t = Search(path, g + 1, bound, fnd);
+					if (fnd) {
+						found = true;
+						return bound;
+					}
+					if (t < min) min = t;
+					path.pop_back();
+				}
+			}
+		}
+	}
+	return min;
+}
 
 //IDA* //TO DO
-//void Solve(State state) {
-//	int bound = state.heuristic();
-//	std::deque<State> path;
-//	path.push_back(state);
-//	bool found = false;
-//	while (!found) {
-//		int t = Search(path, 0, bound, found);
-//		if (found) break;
-//		bound = t;
-//	}
-//	for each(State s in path) {
-//		s.printState();
-//		std::cout << std::endl;
-//	}
-//
-//	std::cout << "Steps: " << path.size() - 1 << std::endl;
-//}
+void Solve(State state) {
+	int bound = state.heuristic();
+	std::deque<State> path;
+	path.push_back(state);
+	bool found = false;
+	while (!found) {
+		int t = Search(path, 0, bound, found);
+		if (found) break;
+		bound = t;
+	}
+	for each(State s in path) {
+		s.printState();
+		std::cout << std::endl;
+	}
+
+	std::cout << "Steps: " << path.size() - 1 << std::endl;
+}
 
 int main() {
+	//std::string s = "WGBGBGWWWGRRYRYYYBRBYBGWR";
+	//std::string s = "RGBYWRGBYWRGBYWRGBYWGBYWR";
+	//State state = State(s, 4);
 	State state;
 	state.genRandomState();
 	state.printState();
+	Solve(state);
+	/*state.printState();
+	int hc = state.heuristic();
 	State new_state = state.makeMove(Right, -1);
 	std::cout << std::endl;
 	new_state.printState();
+	hc = new_state.heuristic();*/
+	
 
 	/*srand(time(0));
 	time_t start = clock();

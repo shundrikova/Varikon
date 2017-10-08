@@ -1,4 +1,7 @@
 ﻿  main.cpp
-c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(185): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(122): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(173): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(180): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(169): warning C4715: 'State::canMove': not all control paths return a value
   varikon.vcxproj -> C:\Users\Sasha\Documents\GitHub\Varikon\varikon\x64\Debug\varikon.exe
   varikon.vcxproj -> C:\Users\Sasha\Documents\GitHub\Varikon\varikon\x64\Debug\varikon.pdb (Full PDB)
