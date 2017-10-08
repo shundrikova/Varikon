@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <ctime>
 #include <cstdlib>
+#include <set>
+#include <queue>
 
 const size_t size = 25;
 
@@ -24,18 +26,13 @@ class State {
 	std::pair<char, size_t> notch;
 	int null_index;
 public:
+	int g = 0;
 	//конструкторы
 	State() {}
 
-	State(std::array<char, size> init_st, size_t notch_index) :st(init_st) {
-		null_index = -1;
-		notch = std::pair<char, size_t>({ 'E', notch_index });
-	}
-
-	State(std::string &s, size_t notch_index) {
+	State(std::string &s, std::pair<char, size_t> n):notch(n) {
 		st = Parser(s);
 		null_index = -1;
-		notch = std::pair<char, size_t>({ 'E', notch_index });
 	}
 
 	//конструктор копии
@@ -61,6 +58,18 @@ public:
 		return true;
 	}
 
+	friend bool operator<(const State& s1, const State& s2)
+	{
+		for (int i = 0; i < size; i++)
+		{
+			if (s1.st[i] < s2.st[i])
+				return true;
+			if (s1.st[i] > s2.st[i])
+				return false;
+		}
+		return false;
+	}
+
 	//вывод состояния
 	void printState() {
 		int cnt = 0;
@@ -77,7 +86,7 @@ public:
 		}
 	};
 
-	//эвристика //TO DO
+	//эвристика
 	int heuristic() const {
 		int h = 0;
 		int j = 0;
@@ -122,9 +131,15 @@ public:
 				s.null_index = notch.second;
 			}
 			break;
-		case Down:
-			std::swap(s.st[s.null_index], s.st[s.null_index - 5]);
-			s.null_index -= 5;
+		case Down: 
+			if (null_index < 5) {
+				std::swap(s.st[s.null_index], s.notch.first);
+				s.null_index = -1;
+			}
+			else {
+				std::swap(s.st[s.null_index], s.st[s.null_index - 5]);
+				s.null_index -= 5;
+			}
 			break;
 		case Left:
 			if (index != -1)
@@ -157,7 +172,7 @@ public:
 		case Down:
 			if (null_index < 5 && null_index % 5 != notch.second % 5)
 				return false;
-			return false;
+			return true;
 			break;
 		case Left:
 		case Right: return true;
@@ -189,7 +204,7 @@ public:
 //вспомогательная функция для IDA* //TO DO
 int Search(std::deque<State>&path, int g, int bound, bool &found) {
 	State s = path.back();
-	double f = g + s.heuristic();
+	int f = g + s.heuristic();
 	if (f > bound) return f;
 	if (s.isFinal()) {
 		found = true;
@@ -240,19 +255,18 @@ void Solve(State state) {
 
 int main() {
 	//std::string s = "WGBGBGWWWGRRYRYYYBRBYBGWR";
-	//std::string s = "RGBYWRGBYWRGBYWRGBYWGBYWR";
-	//State state = State(s, 4);
-	State state;
-	state.genRandomState();
+	std::string s = "GBYWRBYWRGRGBYWWRGBYGBYWR";
+	std::pair<char, size_t> n = std::pair<char, size_t>({ 'E', 4 });
+	State state = State(s, n);
+	//State state;
+	//state.genRandomState();
 	state.printState();
+
+	srand(time(0));
+	time_t start = clock();
 	Solve(state);
-	/*state.printState();
-	int hc = state.heuristic();
-	State new_state = state.makeMove(Right, -1);
-	std::cout << std::endl;
-	new_state.printState();
-	hc = new_state.heuristic();*/
-	
+	std::cout.precision(10);
+	std::cout << "Time: " << double(clock() - start) / CLOCKS_PER_SEC << " seconds\n";	
 
 	/*srand(time(0));
 	time_t start = clock();
