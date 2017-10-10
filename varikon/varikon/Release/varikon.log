@@ -1,9 +1,14 @@
 ﻿  main.cpp
-main.cpp(14): warning C4018: '<': signed/unsigned mismatch
-main.cpp(55): warning C4018: '<': signed/unsigned mismatch
-main.cpp(170): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+main.cpp(17): warning C4018: '<': signed/unsigned mismatch
+main.cpp(72): warning C4018: '<': signed/unsigned mismatch
+main.cpp(213): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+main.cpp(220): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+main.cpp(411): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   Generating code
-  All 44 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(209): warning C4715: 'State::canMove': not all control paths return a value
+  181 of 286 functions (63.3%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    5 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  varikon.vcxproj -> C:\Users\Sasha\Documents\Visual Studio 2015\Projects\varikon\Release\varikon.exe
-  varikon.vcxproj -> C:\Users\Sasha\Documents\Visual Studio 2015\Projects\varikon\Release\varikon.pdb (Full PDB)
+  varikon.vcxproj -> C:\Users\Sasha\Documents\GitHub\Varikon\varikon\Release\varikon.exe
+  varikon.vcxproj -> C:\Users\Sasha\Documents\GitHub\Varikon\varikon\Release\varikon.pdb (Full PDB)

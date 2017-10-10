@@ -1,6 +1,10 @@
 ﻿  main.cpp
-c:\users\sasha\documents\visual studio 2015\projects\varikon\varikon\main.cpp(14): warning C4018: '<': signed/unsigned mismatch
-c:\users\sasha\documents\visual studio 2015\projects\varikon\varikon\main.cpp(56): warning C4018: '<': signed/unsigned mismatch
-c:\users\sasha\documents\visual studio 2015\projects\varikon\varikon\main.cpp(169): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  varikon.vcxproj -> C:\Users\Sasha\Documents\Visual Studio 2015\Projects\varikon\Debug\varikon.exe
-  varikon.vcxproj -> C:\Users\Sasha\Documents\Visual Studio 2015\Projects\varikon\Debug\varikon.pdb (Full PDB)
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(17): warning C4018: '<': signed/unsigned mismatch
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(72): warning C4018: '<': signed/unsigned mismatch
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(213): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(220): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(411): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(344): warning C4715: 'AStar': not all control paths return a value
+c:\users\sasha\documents\github\varikon\varikon\varikon\main.cpp(209): warning C4715: 'State::canMove': not all control paths return a value
+  varikon.vcxproj -> C:\Users\Sasha\Documents\GitHub\Varikon\varikon\Debug\varikon.exe
+  varikon.vcxproj -> C:\Users\Sasha\Documents\GitHub\Varikon\varikon\Debug\varikon.pdb (Full PDB)
