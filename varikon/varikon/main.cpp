@@ -86,6 +86,8 @@ public:
 			if (s1.st[i] > s2.st[i])
 				return false;
 		}
+		if (s1.notch.second < s2.notch.second) return true;
+		if (s1.notch.second > s2.notch.second) return false;
 		return false;
 	}
 
@@ -161,15 +163,21 @@ public:
 			}
 			break;
 		case Left:
-			if (index != -1)
+			if (index != -1) {
 				std::rotate(s.st.begin() + index * 5, s.st.begin() + index * 5 + 1, s.st.begin() + index * 5 + 5);
+				if(std::find(s.st.begin() + index * 5, s.st.begin() + index * 5 + 5, 'E') != s.st.begin() + index * 5 + 5)
+					s.null_index = index * 5 + (s.null_index + 4) % 5;
+			}
 			else {
 				s.notch.second = (s.notch.second + 4) % 5;
 			}
 			break;
 		case Right:
-			if (index != -1)
+			if (index != -1) {
 				std::rotate(s.st.begin() + index * 5, s.st.begin() + index * 5 + 4, s.st.begin() + index * 5 + 5);
+				if(std::find(s.st.begin() + index * 5, s.st.begin() + index * 5 + 5, 'E') != s.st.begin() + index * 5 + 5)
+				 s.null_index = index * 5 + (s.null_index + 1) % 5;
+			}
 			else {
 				s.notch.second = (s.notch.second + 1) % 5;
 			}
@@ -291,26 +299,26 @@ void print(State&s) {
 		print(*s.parent);
 }
 
-void AStar(State &state){
-	std::multiset<State> seen;
+State AStar(State &state){
+	std::set<State> seen;
 	std::priority_queue<q_type> open;
 	q_type qel;
 
 	state.g = 0;
 	auto emp_res = seen.insert(state);
 	qel.h = state.g + state.heuristic();
-	qel.it = emp_res;
+	qel.it = emp_res.first;
 	open.emplace(qel);
+	//int t;
+	//std::string s = "WGBWWRYBGWRYEYGRYBRBRYBGW";
+	//std::pair<char, size_t> n = std::pair<char, size_t>({ 'G', 2 });
+	//State stt = State(s, n);
 	while (!open.empty())
 	{
 		State cur = *open.top().it;
 		open.pop();
 		if (cur.isFinal())
-		{
-			cur.printState();
-			std::cout << "Steps: " << cur.g << std::endl;
-			return;
-		}
+			return cur;
 
 		State child;
 		for (int i = 0; i < 4; ++i) {
@@ -321,28 +329,22 @@ void AStar(State &state){
 					child = cur.makeMove((Move)i, index);
 					child.g = cur.g + 1;
 					child.parent = new State(cur);
-					if (std::find(seen.begin(), seen.end(), child) == seen.end()) {
-						emp_res = seen.insert(child);
+					if (child.isFinal()) {
+						return child;
 					}
-						if (child.isFinal()) {
-							print(child);
-							std::cout << "Steps: " << child.g << std::endl;
-							return;
-						}
-							
+					emp_res = seen.insert(child);
+					if (emp_res.second) {
 						qel.h =
 							child.g +
 							child.heuristic();
-						qel.it = emp_res;
-						open.emplace(qel);					
-					
+						qel.it = emp_res.first;
+						open.emplace(qel);
+					}
 				}
 			}
 		}
 	}
 }
-
-// https://en.wikipedia.org/wiki/Fringe_search 
 
 int main() {
 	std::string s = "WGBGBGWWWGRRYRYYYBRBYBGWR";
@@ -350,17 +352,20 @@ int main() {
 	//std::string s = "RGBYWRGBEWBYWRGWRGBYGBYWR";
 	std::pair<char, size_t> n = std::pair<char, size_t>({ 'E', 4 });
 	State state = State(s, n);
+	
 	//State state;
 	//state.genRandomState();
-	//state.printState();
+	state.printState();
 	std::cout << std::endl;
 
 	srand(time(0));
 	time_t start = clock();
 	//Solve(state);
-	AStar(state);
+	State result = AStar(state);
+	std::cout << "Steps: " << result.g << std::endl;
 	std::cout.precision(10);
 	std::cout << "Time: " << double(clock() - start) / CLOCKS_PER_SEC << " seconds\n";	
+	print(result);
 
 	/*srand(time(0));
 	time_t start = clock();
