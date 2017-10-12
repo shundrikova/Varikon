@@ -30,6 +30,7 @@ class State {
 public:
 	int g = 0;
 	State *parent = 0;
+
 	//конструкторы
 	State() {}
 
@@ -54,15 +55,6 @@ public:
 		parent = s.parent;
 	}
 
-	/*State(const State &s, const State *p) {
-		null_index = s.null_index;
-		notch = s.notch;
-		for (int i = 0; i < size; ++i)
-			st[i] = s.st[i];
-		g = s.g;
-		*parent = *p;
-	}
-*/
 	//оператор проверки на равенство
 	friend const bool operator == (const State &s1, const State &s2)
 	{
@@ -231,7 +223,7 @@ public:
 
 
 
-//вспомогательная функция для IDA* //TO DO
+//вспомогательная функция для IDA*
 int Search(std::deque<State>&path, int g, int bound, bool &found) {
 	State s = path.back();
 	int f = g + s.heuristic();
@@ -264,7 +256,7 @@ int Search(std::deque<State>&path, int g, int bound, bool &found) {
 	return min;
 }
 
-//IDA* //TO DO
+//IDA*
 void Solve(State state) {
 	int bound = state.heuristic();
 	std::deque<State> path;
@@ -343,64 +335,12 @@ State AStar(State &state){
 	}
 }
 
-State fringe(State & state) {
-	std::deque<State> fringe;
-	fringe.push_back(state);
-	int flimit = state.heuristic();
-	bool found = 0;
-	std::map<State, std::pair<int, State*>> cache;
-	cache.emplace(state, std::pair<int, State*>(0, state.parent));
-	State result;
-	//std::deque<State>::iterator it;
-	while (!found && !fringe.empty()) {
-		int fmin = INT_MAX;
-		State s = fringe.front();
-		int g = s.g;
-		int f = g + s.heuristic();
-		if (f > flimit) { 
-			fmin = std::min(f, fmin); 
-			continue;
-		}
-		if (s.isFinal()) {
-			result = s;
-			found = true;
-			break;
-		}
-		State child;
-		for (int i = 0; i < 4; ++i) {
-			if (s.canMove((Move)i)) {
-				int index = -1;
-				if ((Move)i == Up || (Move)i == Down) index = 4;
-				for (index; index < 5; ++index) {
-					child = s.makeMove((Move)i, index);
-					int g_child = child.g = 1 + g;
-					if (cache.find(child) != cache.end()) {
-						int g_cached = cache[child].first;
-						if (g_child >= g_cached) continue;
-					}
-					auto it = std::find(fringe.begin(), fringe.end(), child);
-					if (it != fringe.end())
-						fringe.erase(it);
-					fringe.push_back(child);
-					cache[child].first = g_child;
-					cache[child].second = new State(s);
-				}
-			}
-		}
-			/*auto it = std::find(fringe.begin(), fringe.end(), s);
-			if (it != fringe.end())
-				fringe.erase(it);*/
-		fringe.pop_front();
-		flimit = fmin;
-	}
-	return result;
-}
 
 int main() {
-	//std::string s = "WGBGBGWWWGRRYRYYYBRBYBGWR";
+	std::string s = "WGBGBGWWWGRRYRYYYBRBYBGWR";
 	//std::string s = "RGBYWRGBYWRGBYWWRGBYGBYWR";
-	std::string s = "RGBYWRGBEWBYWRGWRGBYGBYWR";
-	std::pair<char, size_t> n = std::pair<char, size_t>({ 'Y', 4 });
+	//std::string s = "RGBYWRGBEWBYWRGWRGBYGBYWR";
+	std::pair<char, size_t> n = std::pair<char, size_t>({ 'E', 4 });
 	State state = State(s, n);
 	
 	//State state;
@@ -410,10 +350,9 @@ int main() {
 
 	srand(time(0));
 	time_t start = clock();
-	Solve(state);
-	//fringe(state);
-	//State result = AStar(state);
-	//std::cout << "Steps: " << result.g << std::endl;
+	//Solve(state);
+	State result = AStar(state);
+	std::cout << "Steps: " << result.g << std::endl;
 	std::cout.precision(10);
 	std::cout << "Time: " << double(clock() - start) / CLOCKS_PER_SEC << " seconds\n";	
 	//print(result);
