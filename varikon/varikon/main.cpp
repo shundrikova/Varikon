@@ -55,6 +55,10 @@ public:
 		parent = s.parent;
 	}
 
+	/*~State() {
+		delete parent;
+	}*/
+
 	//оператор проверки на равенство
 	friend const bool operator == (const State &s1, const State &s2)
 	{
@@ -242,7 +246,10 @@ int Search(std::deque<State>&path, int g, int bound, bool &found) {
 				if (std::find(path.begin(), path.end(), new_state) == path.end()) {
 					path.push_back(new_state);
 					bool fnd = false;
-					int t = Search(path, g + 1, bound, fnd);
+					int step = 1;
+					if (((Move)i == Left || (Move)i == Right) && index != -1)
+						step = 4;
+					int t = Search(path, g + step, bound, fnd);
 					if (fnd) {
 						found = true;
 						return bound;
@@ -337,22 +344,22 @@ State AStar(State &state){
 
 
 int main() {
-	std::string s = "WGBGBGWWWGRRYRYYYBRBYBGWR";
+	//std::string s = "WGBGBGWWWGRRYRYYYBRBYBGWR";
 	//std::string s = "RGBYWRGBYWRGBYWWRGBYGBYWR";
-	//std::string s = "RGBYWRGBEWBYWRGWRGBYGBYWR";
-	std::pair<char, size_t> n = std::pair<char, size_t>({ 'E', 4 });
-	State state = State(s, n);
+	//std::string s = "RGBYWEWRGBBYWRGWRGBYGBYWR";
+	//std::pair<char, size_t> n = std::pair<char, size_t>({ 'Y', 4 });
+	//State state = State(s, n);
 	
-	//State state;
-	//state.genRandomState();
+	State state;
+	state.genRandomState();
 	state.printState();
 	std::cout << std::endl;
 
 	srand(time(0));
 	time_t start = clock();
-	//Solve(state);
-	State result = AStar(state);
-	std::cout << "Steps: " << result.g << std::endl;
+	Solve(state);
+	//State result = AStar(state);
+	//std::cout << "Steps: " << result.g << std::endl;
 	std::cout.precision(10);
 	std::cout << "Time: " << double(clock() - start) / CLOCKS_PER_SEC << " seconds\n";	
 	//print(result);
