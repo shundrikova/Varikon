@@ -134,6 +134,28 @@ public:
 		return h;
 	};
 
+	int heuristic2() const {
+		int h = 0;
+		int j = 2;
+		int param = 8;
+		while (j < 4) {
+			for (int i = j * 5; i < j * 5 + 5; ++i) {
+				if (st[i] != st[i + 5])
+					h += param;
+			}
+			param += 2;
+			j++;
+		}
+		std::set<char> last_row;
+		for (int i = 20; i < 25; ++i) {
+			if (st[i] != 'E')
+				last_row.insert(st[i]).second;
+		}
+		if (last_row.size() != 5)
+			h += 100;
+		return h;
+	};
+
 	//выполнение хода
 	State makeMove(Move m, int index) {
 		State s(*this);
@@ -331,7 +353,7 @@ State AStar(State &state){
 					emp_res = seen.insert(child);
 					if (emp_res.second) {
 						qel.h =
-							child.g +
+							//child.g +
 							child.heuristic();
 						qel.it = emp_res.first;
 						open.emplace(qel);
@@ -352,15 +374,16 @@ int main() {
 	
 	State state;
 	state.genRandomState();
-	state.printState();
-	std::cout << std::endl;
+	//state.printState();
+	//std::cout << std::endl;
 
 	srand(time(0));
 	time_t start = clock();
-	Solve(state);
-	//State result = AStar(state);
-	//std::cout << "Steps: " << result.g << std::endl;
+	//Solve(state);
+	State result = AStar(state);
+	print(result);
+	result.printState();
+	std::cout << "Steps: " << result.g << std::endl;
 	std::cout.precision(10);
 	std::cout << "Time: " << double(clock() - start) / CLOCKS_PER_SEC << " seconds\n";	
-	//print(result);
 }
